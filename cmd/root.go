@@ -16,14 +16,14 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
+	"log"
 	"os"
-	"github.com/spf13/cobra"
 
-	"github.com/spf13/viper"
+	"github.com/MiniTeks/mks-cli/pkg/mkspipelinerun"
+	"github.com/spf13/cobra"
 )
 
-var cfgFile string
+var CfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -38,6 +38,7 @@ to quickly create a Cobra application.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
+
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -47,39 +48,20 @@ func Execute() {
 }
 
 func init() {
-	cobra.OnInitialize(initConfig)
-
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.mks-cli.yaml)")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-}
-
-// initConfig reads in config file and ENV variables if set.
-func initConfig() {
-	if cfgFile != "" {
-		// Use config file from the flag.
-		viper.SetConfigFile(cfgFile)
+	home, err := os.UserHomeDir()
+	if err != nil {
+		log.Fatalf("Can't get home dir()")
 	} else {
-		// Find home directory.
-		home, err := os.UserHomeDir()
-		cobra.CheckErr(err)
-
-		// Search config in home directory with name ".mks-cli" (without extension).
-		viper.AddConfigPath(home)
-		viper.SetConfigType("yaml")
-		viper.SetConfigName(".mks-cli")
+		home = home + "/.kube/config"
 	}
 
-	viper.AutomaticEnv() // read in environment variables that match
+	rootCmd.PersistentFlags().StringVar(&CfgFile, "config", home, "config file (default is $HOME/.mks-cli.yaml)")
+	rootCmd.AddCommand(
+		mkspipelinerun.Command(CfgFile),
+	)
 
-	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
-	}
 }
