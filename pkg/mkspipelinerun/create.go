@@ -20,7 +20,12 @@ var mksPrCreate = &cobra.Command{
 		"commandType": "main",
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		create()
+		cfgFile, err := cmd.Flags().GetString("config")
+		if err != nil {
+			klog.Fatalf("Error in getting kubeconfig path")
+		} else {
+			create(cfgFile)
+		}
 	},
 }
 
@@ -28,7 +33,7 @@ func createcommand() *cobra.Command {
 	return mksPrCreate
 }
 
-func create() {
+func create(cfgFile string) {
 
 	cfg, err := clientcmd.BuildConfigFromFlags("", cfgFile)
 

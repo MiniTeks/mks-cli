@@ -19,7 +19,12 @@ var mksPrDelete = &cobra.Command{
 		"commandType": "main",
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		delete()
+		cfgFile, err := cmd.Flags().GetString("config")
+		if err != nil {
+			klog.Fatalf("Error in getting kubeconfig path")
+		} else {
+			delete(cfgFile)
+		}
 	},
 }
 
@@ -27,9 +32,9 @@ func deletecommand() *cobra.Command {
 	return mksPrDelete
 }
 
-func delete() {
+func delete(cfgFile string) {
 
-	cfg, err := clientcmd.BuildConfigFromFlags("", "/home/utkarshchaurasia/.kube/config")
+	cfg, err := clientcmd.BuildConfigFromFlags("", cfgFile)
 
 	if err != nil {
 		klog.Fatalf("Error building kubeconfig: %v", err)

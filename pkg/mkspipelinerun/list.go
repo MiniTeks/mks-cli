@@ -20,7 +20,12 @@ var mksPrList = &cobra.Command{
 		"commandType": "main",
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		list()
+		cfgFile, err := cmd.Flags().GetString("config")
+		if err != nil {
+			klog.Fatalf("Error in getting kubeconfig path")
+		} else {
+			list(cfgFile)
+		}
 	},
 }
 
@@ -29,7 +34,7 @@ func listcommand() *cobra.Command {
 	return mksPrList
 }
 
-func list() {
+func list(cfgFile string) {
 	cfg, err := clientcmd.BuildConfigFromFlags("", cfgFile)
 
 	if err != nil {
