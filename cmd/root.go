@@ -16,7 +16,7 @@ limitations under the License.
 package cmd
 
 import (
-	"log"
+	"github.com/MiniTeks/mks-cli/pkg/mkstask"
 	"os"
 
 	"github.com/MiniTeks/mks-cli/pkg/mkspipelinerun"
@@ -25,43 +25,24 @@ import (
 
 var CfgFile string
 
-// rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "mks-cli",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
-
+	Use:   "mks",
+	Short: "mks is a cli client to interact with mks-server ",
+	Long:  "mks is a cli client to interact with mks-server ",
 }
 
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	cobra.CheckErr(rootCmd.Execute())
 }
 
 func init() {
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
 
-	home, err := os.UserHomeDir()
-	if err != nil {
-		log.Fatalf("Can't get home dir()")
-	} else {
-		home = home + "/.kube/config"
-	}
-
-	rootCmd.PersistentFlags().StringVar(&CfgFile, "config", home, "config file (default is $HOME/.mks-cli.yaml)")
 	rootCmd.AddCommand(
+		mkstask.Command(),
 		mkspipelinerun.Command(CfgFile),
 	)
-
+	home, err := os.UserHomeDir()
+	cobra.CheckErr(err)
+	home = home + "/.kube/config"
+	rootCmd.PersistentFlags().StringVar(&CfgFile, "config", home, "k8s config file (default is ${HOME}/.kube/config)")
 }
