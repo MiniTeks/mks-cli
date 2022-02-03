@@ -36,6 +36,7 @@ func Execute() {
 }
 
 func init() {
+
 	rootCmd.AddCommand(
 		mkstask.Command(),
 		mkspipelinerun.Command(CfgFile),
