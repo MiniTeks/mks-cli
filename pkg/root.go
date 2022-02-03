@@ -26,7 +26,7 @@ func init() {
 
 	rootCmd.AddCommand(
 		mkstask.Command(),
-		mkspipelinerun.Command(CfgFile),
+		mkspipelinerun.Command(),
 		mkstaskrun.InitCommand(),
 	)
 	home, err := os.UserHomeDir()

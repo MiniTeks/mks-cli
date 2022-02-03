@@ -6,7 +6,6 @@ require github.com/spf13/cobra v1.3.0
 
 require (
 	github.com/MiniTeks/mks-server v0.0.0-20220131114727-2c52dca417b9
-	github.com/spf13/viper v1.10.0
 	k8s.io/apimachinery v0.23.3
 	k8s.io/client-go v0.23.3
 	k8s.io/klog v1.0.0
@@ -37,6 +36,7 @@ require (
 	github.com/spf13/cast v1.4.1 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/spf13/viper v1.10.0 // indirect
 	github.com/subosito/gotenv v1.2.0 // indirect
 	golang.org/x/net v0.0.0-20211209124913-491a49abca63 // indirect
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8 // indirect

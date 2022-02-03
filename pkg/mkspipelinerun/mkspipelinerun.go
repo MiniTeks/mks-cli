@@ -17,13 +17,12 @@ var mksPrCmd = &cobra.Command{
 	Short: "Manage PipelineRuns",
 }
 
-func Command(cfgPath string) *cobra.Command {
-	cfgFile = cfgPath
+func Command() *cobra.Command {
 	return mksPrCmd
 }
 
 func init() {
-	Command(cfgFile).AddCommand(
+	Command().AddCommand(
 		createcommand(),
 		listcommand(),
 		deletecommand(),
