@@ -1,6 +1,6 @@
 package main
 
-import "github.com/MiniTeks/mks-cli/cmd"
+import "github.com/MiniTeks/mks-cli/pkg"
 
 func main() {
 	cmd.Execute()
