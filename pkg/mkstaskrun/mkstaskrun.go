@@ -57,7 +57,6 @@ func createMksTaskRun() *cobra.Command {
 	return cc
 }
 
-
 func InitCommand() *cobra.Command {
 	mkstaskrunCmd.AddCommand(createMksTaskRun())
 	return mkstaskrunCmd
