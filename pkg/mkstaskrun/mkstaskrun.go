@@ -36,8 +36,9 @@ func createMksTaskRun() *cobra.Command {
 					},
 				},
 			}
+			CfgFile, _ := cmd.Flags().GetString("config")
 
-			cfg, err := clientcmd.BuildConfigFromFlags("", "/home/avinkuma/.kube/config")
+			cfg, err := clientcmd.BuildConfigFromFlags("", CfgFile)
 			if err != nil {
 				return err
 			}
