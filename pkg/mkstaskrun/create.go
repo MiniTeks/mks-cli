@@ -8,10 +8,9 @@ import (
 	"github.com/MiniTeks/mks-server/pkg/client/clientset/versioned"
 	"github.com/spf13/cobra"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/tools/clientcmd"
 )
 
-func createMksTaskRun() *cobra.Command {
+func createMksTaskRun(mksclient *versioned.Clientset) *cobra.Command {
 	cc := &cobra.Command{
 		Use:   "create",
 		Short: "Create a MksTaskRun in default namespace",
@@ -29,16 +28,6 @@ func createMksTaskRun() *cobra.Command {
 						Name: fs,
 					},
 				},
-			}
-			CfgFile, _ := cmd.Flags().GetString("config")
-
-			cfg, err := clientcmd.BuildConfigFromFlags("", CfgFile)
-			if err != nil {
-				return err
-			}
-			mksclient, err := versioned.NewForConfig(cfg)
-			if err != nil {
-				return nil
 			}
 			obj, err := mksclient.MkscontrollerV1alpha1().MksTaskRuns("default").Create(context.TODO(), cmtr, metav1.CreateOptions{})
 			if err != nil {
