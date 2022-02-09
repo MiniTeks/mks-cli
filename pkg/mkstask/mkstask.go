@@ -1,6 +1,7 @@
 package mkstask
 
 import (
+	"github.com/MiniTeks/mks-server/pkg/client/clientset/versioned"
 	"github.com/spf13/cobra"
 )
 
@@ -10,15 +11,12 @@ var mksTaskCmd = &cobra.Command{
 	Long:  "mkstask is to be used to create, get, delete, update, list mksTask resources",
 }
 
-func Command() *cobra.Command {
+func Command(mksclient *versioned.Clientset) *cobra.Command {
+	mksTaskCmd.AddCommand(
+		MksTaskCreate(mksclient),
+		MksTaskGet(mksclient),
+		MksTaskList(mksclient),
+		MksTaskDelete(mksclient),
+		MksTaskUpdate(mksclient))
 	return mksTaskCmd
-
-}
-
-func init() {
-	Command().AddCommand(MksTaskCreate())
-	Command().AddCommand(MksTaskGet())
-	Command().AddCommand(MksTaskList())
-	Command().AddCommand(MksTaskDelete())
-	Command().AddCommand(MksTaskUpdate())
 }
