@@ -15,31 +15,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package mkstaskrun
+package main
 
-import (
-	"context"
-	"fmt"
+import cmd "github.com/MiniTeks/mks-cli/pkg"
 
-	"github.com/MiniTeks/mks-server/pkg/client/clientset/versioned"
-	"github.com/spf13/cobra"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-)
-
-func listMksTaskRun(mksclient *versioned.Clientset) *cobra.Command {
-	cc := &cobra.Command{
-		Use:   "list",
-		Short: "List all MksTaskRuns in default namespace",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			objlist, err := mksclient.MkscontrollerV1alpha1().MksTaskRuns("default").List(context.TODO(), metav1.ListOptions{})
-			if err != nil {
-				return nil
-			}
-			for i, obj := range objlist.Items {
-				fmt.Println(i+1, obj.GetName())
-			}
-			return nil
-		},
-	}
-	return cc
+func main() {
+	cmd.GenerateDocs()
 }
