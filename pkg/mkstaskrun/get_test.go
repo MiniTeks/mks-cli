@@ -27,15 +27,16 @@ import (
 func TestGet(t *testing.T) {
 	fc := &test.FakeMksParam{}
 	fc.SetNamespace("default")
-	fc.SetTestObjects(GetTestData()...)
+	fc.ClearObjects()
+	fc.SetTestObjects(GetTestData(Trget...)...)
 	cs, _ := fc.Client(nil)
 
 	tr := Command(cs)
-	out, err := test.ExecuteCommand(tr, "get", "--name=testmtr3")
+	out, err := test.ExecuteCommand(tr, "get", "--name=getmtr1")
 	fmt.Println(out)
 	if err != nil {
 		t.Fatalf("Cannot execute command: %v", err)
-	} else if out != "name: testmtr3\nnamespace: default\ntaskrunref: mtrref3\n" {
+	} else if out != "name: getmtr1\nnamespace: default\ntaskrunref: gettaskref\n" {
 		t.Fatal("Cant find taskrun")
 	}
 }

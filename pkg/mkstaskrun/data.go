@@ -6,7 +6,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 )
 
-func GetTestData() []runtime.Object {
+func GetTestData(trdata ...*v1alpha1.MksTaskRun) []runtime.Object {
 	var ro []runtime.Object
 	for _, obj := range trdata {
 		ro = append(ro, runtime.Object(obj))
@@ -14,7 +14,7 @@ func GetTestData() []runtime.Object {
 	return ro
 }
 
-var trdata = []*v1alpha1.MksTaskRun{
+var Trlist = []*v1alpha1.MksTaskRun{
 	{
 		ObjectMeta: v1.ObjectMeta{
 			Name:      "testmtr1",
@@ -56,6 +56,34 @@ var trdata = []*v1alpha1.MksTaskRun{
 		Spec: v1alpha1.MksTaskRunSpec{
 			TaskRef: v1alpha1.MksTaskRef{
 				Name: "mtrref4",
+			},
+		},
+	},
+}
+
+var Trdel = []*v1alpha1.MksTaskRun{
+	{
+		ObjectMeta: v1.ObjectMeta{
+			Name:      "delmtr1",
+			Namespace: "default",
+		},
+		Spec: v1alpha1.MksTaskRunSpec{
+			TaskRef: v1alpha1.MksTaskRef{
+				Name: "deletedtaskref",
+			},
+		},
+	},
+}
+
+var Trget = []*v1alpha1.MksTaskRun{
+	{
+		ObjectMeta: v1.ObjectMeta{
+			Name:      "getmtr1",
+			Namespace: "default",
+		},
+		Spec: v1alpha1.MksTaskRunSpec{
+			TaskRef: v1alpha1.MksTaskRef{
+				Name: "gettaskref",
 			},
 		},
 	},
