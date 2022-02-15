@@ -18,7 +18,7 @@
 package mkstaskrun
 
 import (
-	"github.com/MiniTeks/mks-server/pkg/client/clientset/versioned"
+	"github.com/MiniTeks/mks-cli/pkg/mconfig"
 	"github.com/spf13/cobra"
 )
 
@@ -28,11 +28,11 @@ var mkstaskrunCmd = &cobra.Command{
 	Short: "Add create list mkstaskrun",
 }
 
-func Command(mksclient *versioned.Clientset) *cobra.Command {
+func Command(mksc *mconfig.Client) *cobra.Command {
 	mkstaskrunCmd.AddCommand(
-		createMksTaskRun(mksclient),
-		deleteMksTaskRun(mksclient),
-		listMksTaskRun(mksclient),
-		getMksTaskRun(mksclient))
+		createMksTaskRun(mksc),
+		deleteMksTaskRun(mksc),
+		listMksTaskRun(mksc),
+		getMksTaskRun(mksc))
 	return mkstaskrunCmd
 }

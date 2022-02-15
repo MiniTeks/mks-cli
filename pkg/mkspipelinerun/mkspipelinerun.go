@@ -18,7 +18,7 @@
 package mkspipelinerun
 
 import (
-	"github.com/MiniTeks/mks-server/pkg/client/clientset/versioned"
+	"github.com/MiniTeks/mks-cli/pkg/mconfig"
 	"github.com/spf13/cobra"
 )
 
@@ -35,12 +35,12 @@ var mksPrCmd = &cobra.Command{
 	Short: "Manage PipelineRuns",
 }
 
-func Command(mksclient *versioned.Clientset) *cobra.Command {
+func Command(mksc *mconfig.Client) *cobra.Command {
 	mksPrCmd.AddCommand(
-		createcommand(mksclient),
-		listcommand(mksclient),
-		deletecommand(mksclient),
-		getcommand(mksclient),
+		createcommand(mksc),
+		listcommand(mksc),
+		deletecommand(mksc),
+		getcommand(mksc),
 	)
 	return mksPrCmd
 }

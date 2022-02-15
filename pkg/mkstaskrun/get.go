@@ -20,13 +20,15 @@ package mkstaskrun
 import (
 	"context"
 	"fmt"
+	"io"
 
-	"github.com/MiniTeks/mks-server/pkg/client/clientset/versioned"
+	"github.com/MiniTeks/mks-cli/pkg/mconfig"
+	"github.com/MiniTeks/mks-server/pkg/apis/mkscontroller/v1alpha1"
 	"github.com/spf13/cobra"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func getMksTaskRun(mksclient *versioned.Clientset) *cobra.Command {
+func getMksTaskRun(mksc *mconfig.Client) *cobra.Command {
 	cc := &cobra.Command{
 		Use:   "get",
 		Short: "Get a MkstaskRun in default namespace",
@@ -35,14 +37,20 @@ func getMksTaskRun(mksclient *versioned.Clientset) *cobra.Command {
 			if fs == "" {
 				fmt.Errorf("TaskName not defined")
 			}
-			obj, err := mksclient.MkscontrollerV1alpha1().MksTaskRuns("default").Get(context.TODO(), fs, metav1.GetOptions{})
+			obj, err := mksc.Mks.MkscontrollerV1alpha1().MksTaskRuns("default").Get(context.TODO(), fs, metav1.GetOptions{})
 			if err != nil {
 				return nil
 			}
-			fmt.Println(obj)
+			displayCrt(obj, cmd.OutOrStdout())
 			return nil
 		},
 	}
 	cc.Flags().String("name", "", "Name of the taskrun to be deleted")
 	return cc
+}
+
+func displayCrt(crt *v1alpha1.MksTaskRun, w io.Writer) {
+	fmt.Fprintf(w, "name: %s\n", crt.Name)
+	fmt.Fprintf(w, "namespace: %s\n", crt.Namespace)
+	fmt.Fprintf(w, "taskrunref: %s\n", crt.Spec.TaskRef.Name)
 }

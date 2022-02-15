@@ -15,25 +15,50 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package mkstask
+package mconfig
 
 import (
-	"github.com/MiniTeks/mks-cli/pkg/mconfig"
-	"github.com/spf13/cobra"
+	"github.com/MiniTeks/mks-server/pkg/client/clientset/versioned"
+	"k8s.io/client-go/rest"
 )
 
-var mksTaskCmd = &cobra.Command{
-	Use:   "mkstask",
-	Short: "mkstask <option>",
-	Long:  "mkstask is to be used to create, get, delete, update, list mksTask resources",
+type MksParams struct {
+	client    *Client
+	namespace string
 }
 
-func Command(mksc *mconfig.Client) *cobra.Command {
-	mksTaskCmd.AddCommand(
-		MksTaskCreate(mksc),
-		MksTaskGet(mksc),
-		MksTaskList(mksc),
-		MksTaskDelete(mksc),
-		MksTaskUpdate(mksc))
-	return mksTaskCmd
+var _ Params = (*MksParams)(nil)
+
+func (p *MksParams) Client(config *rest.Config) (*Client, error) {
+	if p.client != nil {
+		return p.client, nil
+	}
+
+	mks, err := p.mksClient(config)
+	if err != nil {
+		return nil, err
+	}
+
+	p.client = &Client{
+		Mks: mks,
+	}
+
+	return p.client, nil
+
+}
+
+func (p *MksParams) SetNamespace(ns string) {
+	p.namespace = ns
+}
+
+func (p *MksParams) Namespace() string {
+	return p.namespace
+}
+
+func (p *MksParams) mksClient(config *rest.Config) (versioned.Interface, error) {
+	cfg, err := versioned.NewForConfig(config)
+	if err != nil {
+		return nil, err
+	}
+	return cfg, err
 }

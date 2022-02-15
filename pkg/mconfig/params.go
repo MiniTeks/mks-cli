@@ -15,25 +15,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package mkstask
+package mconfig
 
 import (
-	"github.com/MiniTeks/mks-cli/pkg/mconfig"
-	"github.com/spf13/cobra"
+	"github.com/MiniTeks/mks-server/pkg/client/clientset/versioned"
+	"k8s.io/client-go/rest"
 )
 
-var mksTaskCmd = &cobra.Command{
-	Use:   "mkstask",
-	Short: "mkstask <option>",
-	Long:  "mkstask is to be used to create, get, delete, update, list mksTask resources",
+type Client struct {
+	Mks versioned.Interface
 }
 
-func Command(mksc *mconfig.Client) *cobra.Command {
-	mksTaskCmd.AddCommand(
-		MksTaskCreate(mksc),
-		MksTaskGet(mksc),
-		MksTaskList(mksc),
-		MksTaskDelete(mksc),
-		MksTaskUpdate(mksc))
-	return mksTaskCmd
+type Params interface {
+	Client(config *rest.Config) (*Client, error)
+	SetNamespace(string)
 }

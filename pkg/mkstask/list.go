@@ -20,35 +20,36 @@ package mkstask
 import (
 	"context"
 	"fmt"
+	"io"
 
+	"github.com/MiniTeks/mks-cli/pkg/mconfig"
 	"github.com/MiniTeks/mks-server/pkg/apis/mkscontroller/v1alpha1"
-	"github.com/MiniTeks/mks-server/pkg/client/clientset/versioned"
 	"github.com/spf13/cobra"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func displayCrtList(crt *v1alpha1.MksTaskList) {
+func displayCrtList(crt *v1alpha1.MksTaskList, w io.Writer) {
 	for _, item := range crt.Items {
 		fmt.Print("\n")
-		displayCrt(&item)
+		displayCrt(&item, w)
 	}
 }
 
-func MksTaskList(mksclient *versioned.Clientset) *cobra.Command {
+func MksTaskList(mksc *mconfig.Client) *cobra.Command {
 	mksTaskListCmd := &cobra.Command{
 		Use:   "list",
 		Short: "lists mkstasks",
 		Long:  "mkstask list is used to list",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			namespace, _ := cmd.Flags().GetString("namespace")
-			crt, err := mksclient.MkscontrollerV1alpha1().MksTasks(namespace).List(context.TODO(), v1.ListOptions{})
+			crt, err := mksc.Mks.MkscontrollerV1alpha1().MksTasks(namespace).List(context.TODO(), v1.ListOptions{})
 			if err != nil {
 				fmt.Printf("Error!!! Coldn't get the resource(s) from the namespace %s\n", namespace)
-				fmt.Errorf("Couldn't create mksTsk", err.Error())
+				fmt.Errorf("Couldn't create mksTsk: %v", err)
 				return err
 			}
 			fmt.Printf("Here are resources in the namespace %s\n", namespace)
-			displayCrtList(crt)
+			displayCrtList(crt, cmd.OutOrStdout())
 			return nil
 		},
 	}

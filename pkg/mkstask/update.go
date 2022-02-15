@@ -21,8 +21,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/MiniTeks/mks-cli/pkg/mconfig"
 	"github.com/MiniTeks/mks-server/pkg/apis/mkscontroller/v1alpha1"
-	"github.com/MiniTeks/mks-server/pkg/client/clientset/versioned"
 	"github.com/spf13/cobra"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/klog"
@@ -30,7 +30,7 @@ import (
 
 var myFlags2 fl = fl{}
 
-func MksTaskUpdate(mksclient *versioned.Clientset) *cobra.Command {
+func MksTaskUpdate(mksc *mconfig.Client) *cobra.Command {
 	mksTaskUpdateCmd := &cobra.Command{
 		Use:   "update",
 		Short: "updates mkstask resources ",
@@ -47,9 +47,9 @@ func MksTaskUpdate(mksclient *versioned.Clientset) *cobra.Command {
 				ObjectMeta: v1.ObjectMeta{Name: name},
 				Spec:       v1alpha1.MksTaskSpec{Name: myFlags2.stepname, Image: myFlags2.image, Command: myFlags2.command, Args: myFlags2.args},
 			}
-			crt, err := mksclient.MkscontrollerV1alpha1().MksTasks(myFlags2.namespace).Update(context.TODO(), mt, v1.UpdateOptions{})
+			crt, err := mksc.Mks.MkscontrollerV1alpha1().MksTasks(myFlags2.namespace).Update(context.TODO(), mt, v1.UpdateOptions{})
 			if err != nil {
-				fmt.Errorf("Couldn't update mksTsk", err.Error())
+				fmt.Errorf("Couldn't update mksTsk: %v", err)
 				return err
 			}
 			fmt.Println(crt)

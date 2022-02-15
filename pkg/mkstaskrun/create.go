@@ -21,13 +21,13 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/MiniTeks/mks-cli/pkg/mconfig"
 	"github.com/MiniTeks/mks-server/pkg/apis/mkscontroller/v1alpha1"
-	"github.com/MiniTeks/mks-server/pkg/client/clientset/versioned"
 	"github.com/spf13/cobra"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func createMksTaskRun(mksclient *versioned.Clientset) *cobra.Command {
+func createMksTaskRun(mksc *mconfig.Client) *cobra.Command {
 	cc := &cobra.Command{
 		Use:   "create",
 		Short: "Create a MksTaskRun in default namespace",
@@ -46,7 +46,7 @@ func createMksTaskRun(mksclient *versioned.Clientset) *cobra.Command {
 					},
 				},
 			}
-			obj, err := mksclient.MkscontrollerV1alpha1().MksTaskRuns("default").Create(context.TODO(), cmtr, metav1.CreateOptions{})
+			obj, err := mksc.Mks.MkscontrollerV1alpha1().MksTaskRuns("default").Create(context.TODO(), cmtr, metav1.CreateOptions{})
 			if err != nil {
 				return nil
 			}

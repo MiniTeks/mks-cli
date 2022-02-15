@@ -21,8 +21,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/MiniTeks/mks-cli/pkg/mconfig"
 	"github.com/MiniTeks/mks-server/pkg/apis/mkscontroller/v1alpha1"
-	"github.com/MiniTeks/mks-server/pkg/client/clientset/versioned"
 	"github.com/spf13/cobra"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/klog"
@@ -30,7 +30,7 @@ import (
 
 var myFlags fl = fl{}
 
-func MksTaskCreate(mksclient *versioned.Clientset) *cobra.Command {
+func MksTaskCreate(mksc *mconfig.Client) *cobra.Command {
 	mksTaskCreateCmd := &cobra.Command{
 		Use:   "create",
 		Short: "ceates mkstask",
@@ -48,10 +48,10 @@ func MksTaskCreate(mksclient *versioned.Clientset) *cobra.Command {
 				Spec:       v1alpha1.MksTaskSpec{Name: myFlags.stepname, Image: myFlags.image, Command: myFlags.command, Args: myFlags.args},
 			}
 			namespace, _ := cmd.Flags().GetString("namespace")
-			crt, err := mksclient.MkscontrollerV1alpha1().MksTasks(myFlags.namespace).Create(context.TODO(), mt, v1.CreateOptions{})
+			crt, err := mksc.Mks.MkscontrollerV1alpha1().MksTasks(myFlags.namespace).Create(context.TODO(), mt, v1.CreateOptions{})
 			if err != nil {
 				fmt.Printf("Error!!! Coldn't create the resource with name %s in the namespace %s\n", name, namespace)
-				fmt.Errorf("Couldn't create mksTsk", err.Error())
+				fmt.Errorf("Couldn't create mksTsk %v", err)
 				return err
 			} else {
 				fmt.Println(string(crt.UID))
