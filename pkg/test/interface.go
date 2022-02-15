@@ -55,3 +55,11 @@ func (p *FakeMksParam) SetNamespace(ns string) {
 func (p *FakeMksParam) SetTestObjects(objects ...runtime.Object) {
 	p.objects = objects
 }
+
+func (p *FakeMksParam) ClearObjects() {
+	p.objects = nil
+}
+
+func (p *FakeMksParam) GetObjects() []runtime.Object {
+	return p.objects
+}
