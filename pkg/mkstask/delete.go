@@ -21,13 +21,13 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/MiniTeks/mks-server/pkg/client/clientset/versioned"
+	"github.com/MiniTeks/mks-cli/pkg/mconfig"
 	"github.com/spf13/cobra"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/klog"
 )
 
-func MksTaskDelete(mksclient *versioned.Clientset) *cobra.Command {
+func MksTaskDelete(mksc *mconfig.Client) *cobra.Command {
 	mksTaskDeleteCmd := &cobra.Command{
 		Use:   "delete",
 		Short: "deletes mkstask",
@@ -40,10 +40,10 @@ func MksTaskDelete(mksclient *versioned.Clientset) *cobra.Command {
 				name = args[0]
 			}
 			namespace, _ := cmd.Flags().GetString("namespace")
-			er := mksclient.MkscontrollerV1alpha1().MksTasks(namespace).Delete(context.TODO(), name, v1.DeleteOptions{})
+			er := mksc.Mks.MkscontrollerV1alpha1().MksTasks(namespace).Delete(context.TODO(), name, v1.DeleteOptions{})
 			if er != nil {
 				fmt.Printf("Error!!! Coldn't delete the resource with name %s from the namespace %s\n", name, namespace)
-				fmt.Errorf("Couldn't delete mksTsk", er.Error())
+				fmt.Errorf("Couldn't delete mksTsk: %v", er)
 				return er
 			} else {
 				fmt.Println("Successively deleted")

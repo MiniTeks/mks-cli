@@ -21,14 +21,14 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/MiniTeks/mks-cli/pkg/mconfig"
 	"github.com/MiniTeks/mks-server/pkg/apis/mkscontroller/v1alpha1"
-	"github.com/MiniTeks/mks-server/pkg/client/clientset/versioned"
 	"github.com/spf13/cobra"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/klog/v2"
 )
 
-func getcommand(mksclient *versioned.Clientset) *cobra.Command {
+func getcommand(mksc *mconfig.Client) *cobra.Command {
 	mksPrGet := &cobra.Command{
 		Use:   "get",
 		Short: "Get PipelineRuns",
@@ -36,7 +36,7 @@ func getcommand(mksclient *versioned.Clientset) *cobra.Command {
 			"commandType": "main",
 		},
 		Run: func(cmd *cobra.Command, args []string) {
-			get, err := mksclient.MkscontrollerV1alpha1().MksPipelineRuns(namespace).Get(context.TODO(), resourceName, v1.GetOptions{})
+			get, err := mksc.Mks.MkscontrollerV1alpha1().MksPipelineRuns(namespace).Get(context.TODO(), resourceName, v1.GetOptions{})
 			if err != nil {
 				klog.Fatalf("Get MksPipelineRun failed!", err.Error())
 			} else {

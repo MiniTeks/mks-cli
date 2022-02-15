@@ -20,16 +20,19 @@ package cmd
 import (
 	"os"
 
+	"k8s.io/client-go/rest"
+
+	"github.com/MiniTeks/mks-cli/pkg/mconfig"
 	"github.com/MiniTeks/mks-cli/pkg/mkspipelinerun"
 	"github.com/MiniTeks/mks-cli/pkg/mkstask"
 	"github.com/MiniTeks/mks-cli/pkg/mkstaskrun"
-	"github.com/MiniTeks/mks-server/pkg/client/clientset/versioned"
 	"github.com/spf13/cobra"
 	"github.com/spf13/cobra/doc"
 	"k8s.io/client-go/tools/clientcmd"
 )
 
-var CfgFile, home string
+var CfgFile string
+var Cfg *rest.Config
 
 var rootCmd = &cobra.Command{
 	Use:   "mks",
@@ -48,9 +51,10 @@ func init() {
 	home = home + "/.kube/config"
 	rootCmd.PersistentFlags().StringVar(&CfgFile, "config", home, "k8s config file (default is ${HOME}/.kube/config)")
 
-	cfg, err := clientcmd.BuildConfigFromFlags("", CfgFile)
+	Cfg, err := clientcmd.BuildConfigFromFlags("", CfgFile)
 	cobra.CheckErr(err)
-	mksclient, err := versioned.NewForConfig(cfg)
+	mcl := &mconfig.MksParams{}
+	mksclient, err := mcl.Client(Cfg)
 	cobra.CheckErr(err)
 	rootCmd.AddCommand(
 		mkstask.Command(mksclient),

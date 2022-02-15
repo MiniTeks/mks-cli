@@ -15,25 +15,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package mkstask
+package test
 
 import (
-	"github.com/MiniTeks/mks-cli/pkg/mconfig"
+	"bytes"
 	"github.com/spf13/cobra"
 )
 
-var mksTaskCmd = &cobra.Command{
-	Use:   "mkstask",
-	Short: "mkstask <option>",
-	Long:  "mkstask is to be used to create, get, delete, update, list mksTask resources",
+func ExecuteCommand(root *cobra.Command, args ...string) (output string, err error) {
+	_, output, err = executeCommandC(root, args...)
+	return output, err
 }
-
-func Command(mksc *mconfig.Client) *cobra.Command {
-	mksTaskCmd.AddCommand(
-		MksTaskCreate(mksc),
-		MksTaskGet(mksc),
-		MksTaskList(mksc),
-		MksTaskDelete(mksc),
-		MksTaskUpdate(mksc))
-	return mksTaskCmd
+func executeCommandC(root *cobra.Command, args ...string) (*cobra.Command, string, error) {
+	buf := new(bytes.Buffer)
+	root.SetOut(buf)
+	root.SetErr(buf)
+	root.SetArgs(args)
+	c, err := root.ExecuteC()
+	return c, buf.String(), err
 }

@@ -20,21 +20,22 @@ package mkstask
 import (
 	"context"
 	"fmt"
+	"io"
 
+	"github.com/MiniTeks/mks-cli/pkg/mconfig"
 	"github.com/MiniTeks/mks-server/pkg/apis/mkscontroller/v1alpha1"
-	"github.com/MiniTeks/mks-server/pkg/client/clientset/versioned"
 	"github.com/spf13/cobra"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/klog"
 )
 
-func displayCrt(crt *v1alpha1.MksTask) {
-	fmt.Println("name : ", crt.Name)
-	fmt.Println("namespace : ", crt.Namespace)
-	fmt.Println("spec : ", crt.Spec)
+func displayCrt(crt *v1alpha1.MksTask, w io.Writer) {
+	fmt.Fprintf(w, "name : %s\n", crt.Name)
+	fmt.Fprintf(w, "namespace %s\n: ", crt.Namespace)
+	fmt.Fprintf(w, "spec : %s\n", crt.Spec)
 }
 
-func MksTaskGet(mksclient *versioned.Clientset) *cobra.Command {
+func MksTaskGet(mksc *mconfig.Client) *cobra.Command {
 	mksTaskGetCmd := &cobra.Command{
 		Use:   "get",
 		Short: "gets mkstasks",
@@ -47,14 +48,13 @@ func MksTaskGet(mksclient *versioned.Clientset) *cobra.Command {
 				name = args[0]
 			}
 			namespace, _ := cmd.Flags().GetString("namespace")
-			crt, err := mksclient.MkscontrollerV1alpha1().MksTasks(namespace).Get(context.Background(), name, v1.GetOptions{})
+			crt, err := mksc.Mks.MkscontrollerV1alpha1().MksTasks(namespace).Get(context.Background(), name, v1.GetOptions{})
 			if err != nil {
 				fmt.Printf("Error!!! Coldn't get any resource with name %s inside %s\n", name, namespace)
 				klog.Fatal(err.Error())
 				return err
 			}
-			fmt.Println("Here is your requested resource")
-			displayCrt(crt)
+			displayCrt(crt, cmd.OutOrStdout())
 			return nil
 
 		},

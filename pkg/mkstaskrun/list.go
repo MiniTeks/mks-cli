@@ -21,22 +21,22 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/MiniTeks/mks-server/pkg/client/clientset/versioned"
+	"github.com/MiniTeks/mks-cli/pkg/mconfig"
 	"github.com/spf13/cobra"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func listMksTaskRun(mksclient *versioned.Clientset) *cobra.Command {
+func listMksTaskRun(mksc *mconfig.Client) *cobra.Command {
 	cc := &cobra.Command{
 		Use:   "list",
 		Short: "List all MksTaskRuns in default namespace",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			objlist, err := mksclient.MkscontrollerV1alpha1().MksTaskRuns("default").List(context.TODO(), metav1.ListOptions{})
+			objlist, err := mksc.Mks.MkscontrollerV1alpha1().MksTaskRuns("default").List(context.TODO(), metav1.ListOptions{})
 			if err != nil {
-				return nil
+				return err
 			}
 			for i, obj := range objlist.Items {
-				fmt.Println(i+1, obj.GetName())
+				fmt.Fprintf(cmd.OutOrStdout(), "%d %s\n", i+1, obj.GetName())
 			}
 			return nil
 		},

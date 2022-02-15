@@ -21,14 +21,13 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/MiniTeks/mks-server/pkg/client/clientset/versioned"
-
+	"github.com/MiniTeks/mks-cli/pkg/mconfig"
 	"github.com/spf13/cobra"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/klog/v2"
 )
 
-func deletecommand(mksclient *versioned.Clientset) *cobra.Command {
+func deletecommand(mksc *mconfig.Client) *cobra.Command {
 	mksPrDelete := &cobra.Command{
 		Use:   "delete",
 		Short: "Delete PipelineRuns",
@@ -36,7 +35,7 @@ func deletecommand(mksclient *versioned.Clientset) *cobra.Command {
 			"commandType": "main",
 		},
 		Run: func(cmd *cobra.Command, args []string) {
-			delErr := mksclient.MkscontrollerV1alpha1().MksPipelineRuns(namespace).Delete(context.TODO(), resourceName, v1.DeleteOptions{})
+			delErr := mksc.Mks.MkscontrollerV1alpha1().MksPipelineRuns(namespace).Delete(context.TODO(), resourceName, v1.DeleteOptions{})
 			if delErr != nil {
 				klog.Fatalf("Delete MksPipelineRun failed!", delErr.Error())
 			}
