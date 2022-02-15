@@ -17,8 +17,25 @@
 
 package mkstaskrun
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+
+	"github.com/MiniTeks/mks-cli/pkg/test"
+)
 
 func TestGet(t *testing.T) {
+	fc := &test.FakeMksParam{}
+	fc.SetNamespace("default")
+	fc.SetTestObjects(GetTestData()...)
+	cs, _ := fc.Client(nil)
 
+	tr := Command(cs)
+	out, err := test.ExecuteCommand(tr, "get", "--name=testmtr3")
+	fmt.Println(out)
+	if err != nil {
+		t.Fatalf("Cannot execute command: %v", err)
+	} else if out != "name: testmtr3\nnamespace: default\ntaskrunref: mtrref3\n" {
+		t.Fatal("Cant find taskrun")
+	}
 }
