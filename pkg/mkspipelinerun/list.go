@@ -20,6 +20,7 @@ package mkspipelinerun
 import (
 	"context"
 	"fmt"
+	"io"
 
 	"github.com/MiniTeks/mks-cli/pkg/mconfig"
 	"github.com/MiniTeks/mks-server/pkg/apis/mkscontroller/v1alpha1"
@@ -35,14 +36,14 @@ func listcommand(mksc *mconfig.Client) *cobra.Command {
 		Annotations: map[string]string{
 			"commandType": "main",
 		},
-		Run: func(cmd *cobra.Command, args []string) {
+
+		RunE: func(cmd *cobra.Command, args []string) error {
 			fet, err := mksc.Mks.MkscontrollerV1alpha1().MksPipelineRuns(namespace).List(context.TODO(), v1.ListOptions{})
 			if err != nil {
-				fmt.Printf("Error!!! Coldn't get the resource(s) from the namespace %s\n", namespace)
-				fmt.Errorf("Couldn't create mksPipelineRun %v", err.Error())
-			} else {
-				printList(fet)
+				return nil
 			}
+			printList(fet, cmd.OutOrStdout())
+			return nil
 		},
 	}
 	mksPrList.Flags().StringVar(&namespace, "ns", "default", "NameSpace of MksPipelineRun Resource")
@@ -50,18 +51,12 @@ func listcommand(mksc *mconfig.Client) *cobra.Command {
 	return mksPrList
 }
 
-func printList(fet *v1alpha1.MksPipelineRunList) {
+func printList(fet *v1alpha1.MksPipelineRunList, w io.Writer) {
 	fmt.Println("Here is List")
 	fmt.Printf("\n")
-	for i := range fet.Items {
-		fmt.Println("MKS PIPELINERUN: ", i+1)
-		fmt.Println("UID: ", fet.Items[i].UID)
-		fmt.Println("Name: ", fet.Items[i].Name)
-		fmt.Println("Namespace: ", fet.Items[i].Namespace)
-		fmt.Println("PipelineRef: ", fet.Items[i].Spec.PipelineRef)
-		fmt.Println("Created At: ", fet.Items[i].CreationTimestamp)
+	for i, obj := range fet.Items {
+		fmt.Fprintf(w, "%d %s\n", i+1, obj.GetName())
 
-		fmt.Printf("\n")
 	}
 
 }
