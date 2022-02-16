@@ -34,6 +34,7 @@ func deletecommand(mksc *mconfig.Client) *cobra.Command {
 			"commandType": "main",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
+
 			delErr := mksc.Mks.MkscontrollerV1alpha1().MksPipelineRuns(namespace).Delete(context.TODO(), resourceName, v1.DeleteOptions{})
 			if delErr != nil {
 				return nil

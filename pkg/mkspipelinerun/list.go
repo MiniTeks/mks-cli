@@ -36,6 +36,7 @@ func listcommand(mksc *mconfig.Client) *cobra.Command {
 		Annotations: map[string]string{
 			"commandType": "main",
 		},
+
 		RunE: func(cmd *cobra.Command, args []string) error {
 			fet, err := mksc.Mks.MkscontrollerV1alpha1().MksPipelineRuns(namespace).List(context.TODO(), v1.ListOptions{})
 			if err != nil {

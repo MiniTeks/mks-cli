@@ -35,6 +35,7 @@ func getcommand(mksc *mconfig.Client) *cobra.Command {
 		Annotations: map[string]string{
 			"commandType": "main",
 		},
+    
 		RunE: func(cmd *cobra.Command, args []string) error {
 			get, err := mksc.Mks.MkscontrollerV1alpha1().MksPipelineRuns(namespace).Get(context.TODO(), resourceName, v1.GetOptions{})
 			if err != nil {
