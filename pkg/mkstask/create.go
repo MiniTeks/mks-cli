@@ -50,25 +50,22 @@ func MksTaskCreate(mksc *mconfig.Client) *cobra.Command {
 			namespace, _ := cmd.Flags().GetString("namespace")
 			crt, err := mksc.Mks.MkscontrollerV1alpha1().MksTasks(myFlags.namespace).Create(context.TODO(), mt, v1.CreateOptions{})
 			if err != nil {
-				fmt.Printf("Error!!! Coldn't create the resource with name %s in the namespace %s\n", name, namespace)
-				fmt.Errorf("Couldn't create mksTsk %v", err)
+				fmt.Errorf("Couldn't create mksTsk inside namespace %s : %v", namespace, err)
 				return err
-			} else {
-				fmt.Println(string(crt.UID))
 			}
-			fmt.Println(crt)
-			fmt.Println(args, "mkstask create called")
+
+			fmt.Fprintf(cmd.OutOrStdout(), crt.Name)
 			return nil
 		},
 	}
 	mksTaskCreateCmd.Flags().StringVarP(&myFlags.namespace, "namespace", "n", "default", "namespace of the mksTaskResource")
 	mksTaskCreateCmd.Flags().StringVarP(&myFlags.stepname, "stepname", "s", "", "provide step name")
-	mksTaskCreateCmd.MarkFlagRequired("sn")
+	mksTaskCreateCmd.MarkFlagRequired("s")
 	mksTaskCreateCmd.Flags().StringVarP(&myFlags.image, "image", "i", "", "name of the image resource")
 	mksTaskCreateCmd.MarkFlagRequired("i")
 	mksTaskCreateCmd.Flags().StringVarP(&myFlags.command, "command", "c", "", "commands")
 	mksTaskCreateCmd.MarkFlagRequired("command")
 	mksTaskCreateCmd.Flags().StringVarP(&myFlags.args, "args", "a", "", "arguments to the commmand")
-	mksTaskCreateCmd.MarkFlagRequired("args")
+	
 	return mksTaskCreateCmd
 }

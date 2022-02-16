@@ -26,12 +26,11 @@ import (
 	"github.com/MiniTeks/mks-server/pkg/apis/mkscontroller/v1alpha1"
 	"github.com/spf13/cobra"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/klog"
 )
 
 func displayCrt(crt *v1alpha1.MksTask, w io.Writer) {
 	fmt.Fprintf(w, "name : %s\n", crt.Name)
-	fmt.Fprintf(w, "namespace %s\n: ", crt.Namespace)
+	fmt.Fprintf(w, "namespace: %s\n", crt.Namespace)
 	fmt.Fprintf(w, "spec : %s\n", crt.Spec)
 }
 
@@ -43,16 +42,14 @@ func MksTaskGet(mksc *mconfig.Client) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var name string = ""
 			if len(args) == 0 {
-				klog.Fatalf("A Name argument is required to get your resource")
+				return nil
 			} else {
 				name = args[0]
 			}
 			namespace, _ := cmd.Flags().GetString("namespace")
 			crt, err := mksc.Mks.MkscontrollerV1alpha1().MksTasks(namespace).Get(context.Background(), name, v1.GetOptions{})
 			if err != nil {
-				fmt.Printf("Error!!! Coldn't get any resource with name %s inside %s\n", name, namespace)
-				klog.Fatal(err.Error())
-				return err
+				return nil
 			}
 			displayCrt(crt, cmd.OutOrStdout())
 			return nil

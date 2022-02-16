@@ -15,27 +15,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package mkspipelinerun
+package mkstask
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/MiniTeks/mks-cli/pkg/test"
 )
 
-func TestDelete(t *testing.T) {
+func TestGet(t *testing.T) {
 	fc := &test.FakeMksParam{}
 	fc.SetNamespace("default")
 	fc.ClearObjects()
-	fc.SetTestObjects(GetTestData(Prdel...)...)
+	fc.SetTestObjects(GetTestData(Tget...)...)
 	cs, _ := fc.Client(nil)
 
-	pr := Command(cs)
-	_, err := test.ExecuteCommand(pr, "delete", "--rn=delmpr1")
-	out, _ := test.ExecuteCommand(pr, "get", "--rn=delmpr1")
+	mt := Command(cs)
+	out, err := test.ExecuteCommand(mt, "get", "getmt1")
+	fmt.Println(out)
 	if err != nil {
 		t.Fatalf("Cannot execute command: %v", err)
-	} else if out != "" {
-		t.Fatal("Cant delete pipelinerun")
+	} else if out != "name : getmt1\nnamespace: default\nspec : {gettaskstep ubuntu ls -l}\n" {
+		t.Fatal("Cant find task")
 	}
 }

@@ -37,6 +37,6 @@ func TestGet(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Cannot execute command: %v", err)
 	} else if out != "name: getmpr1\nnamespace: default\npipelinerunref: getpipelineref\n" {
-		t.Fatal("Cant find taskrun")
+		t.Fatal("Cant find pipelinerun")
 	}
 }
