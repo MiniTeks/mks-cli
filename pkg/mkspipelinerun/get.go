@@ -20,12 +20,12 @@ package mkspipelinerun
 import (
 	"context"
 	"fmt"
+	"io"
 
 	"github.com/MiniTeks/mks-cli/pkg/mconfig"
 	"github.com/MiniTeks/mks-server/pkg/apis/mkscontroller/v1alpha1"
 	"github.com/spf13/cobra"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/klog/v2"
 )
 
 func getcommand(mksc *mconfig.Client) *cobra.Command {
@@ -35,13 +35,13 @@ func getcommand(mksc *mconfig.Client) *cobra.Command {
 		Annotations: map[string]string{
 			"commandType": "main",
 		},
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			get, err := mksc.Mks.MkscontrollerV1alpha1().MksPipelineRuns(namespace).Get(context.TODO(), resourceName, v1.GetOptions{})
 			if err != nil {
-				klog.Fatalf("Get MksPipelineRun failed!", err.Error())
-			} else {
-				printPipelineRun(get)
+				return nil
 			}
+			printPipelineRun(get, cmd.OutOrStdout())
+			return nil
 		},
 	}
 	mksPrGet.Flags().StringVar(&resourceName, "rn", "", "Name of MksPipelineRun Resource to be fetched")
@@ -50,12 +50,8 @@ func getcommand(mksc *mconfig.Client) *cobra.Command {
 	return mksPrGet
 }
 
-func printPipelineRun(get *v1alpha1.MksPipelineRun) {
-	fmt.Println("MKS PIPELINERUN: ")
-	fmt.Printf("\n")
-	fmt.Println("UID: ", get.UID)
-	fmt.Println("Name: ", get.Name)
-	fmt.Println("Namespace: ", get.Namespace)
-	fmt.Println("PipelineRef: ", get.Spec.PipelineRef)
-	fmt.Println("Created At: ", get.CreationTimestamp)
+func printPipelineRun(get *v1alpha1.MksPipelineRun, w io.Writer) {
+	fmt.Fprintf(w, "name: %s\n", get.Name)
+	fmt.Fprintf(w, "namespace: %s\n", get.Namespace)
+	fmt.Fprintf(w, "pipelinerunref: %s\n", get.Spec.PipelineRef.Name)
 }

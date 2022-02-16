@@ -47,7 +47,7 @@ func createcommand(mksc *mconfig.Client) *cobra.Command {
 			if err != nil {
 				klog.Fatalf("Create MksPipelineRun failed!", err.Error())
 			}
-			fmt.Println("Mks Pipeline created with UID: ", crt.UID)
+			fmt.Fprintf(cmd.OutOrStdout(), crt.Name)
 		},
 	}
 	mksPrCreate.Flags().StringVar(&resourceName, "n", "", "Name of MksPipelineRun Resource")
