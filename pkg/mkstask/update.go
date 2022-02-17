@@ -65,6 +65,5 @@ func MksTaskUpdate(mksc *mconfig.Client) *cobra.Command {
 	mksTaskUpdateCmd.Flags().StringVarP(&myFlags2.command, "command", "c", "", "commands")
 	mksTaskUpdateCmd.MarkFlagRequired("command")
 	mksTaskUpdateCmd.Flags().StringVarP(&myFlags2.args, "args", "a", "", "arguments to the commmand")
-	mksTaskUpdateCmd.MarkFlagRequired("args")
 	return mksTaskUpdateCmd
 }

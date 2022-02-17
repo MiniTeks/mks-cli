@@ -29,9 +29,9 @@ import (
 )
 
 func displayCrtList(crt *v1alpha1.MksTaskList, w io.Writer) {
-	for _, item := range crt.Items {
-		fmt.Print("\n")
-		displayCrt(&item, w)
+	for i, obj := range crt.Items {
+		fmt.Fprintf(w, "%d %s\n", i+1, obj.GetName())
+
 	}
 }
 

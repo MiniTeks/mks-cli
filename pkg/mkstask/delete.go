@@ -24,7 +24,6 @@ import (
 	"github.com/MiniTeks/mks-cli/pkg/mconfig"
 	"github.com/spf13/cobra"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/klog"
 )
 
 func MksTaskDelete(mksc *mconfig.Client) *cobra.Command {
@@ -35,16 +34,14 @@ func MksTaskDelete(mksc *mconfig.Client) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var name string = ""
 			if len(args) == 0 {
-				klog.Fatalf("Name argument is required to identify your resource")
+				return nil
 			} else {
 				name = args[0]
 			}
 			namespace, _ := cmd.Flags().GetString("namespace")
 			er := mksc.Mks.MkscontrollerV1alpha1().MksTasks(namespace).Delete(context.TODO(), name, v1.DeleteOptions{})
 			if er != nil {
-				fmt.Printf("Error!!! Coldn't delete the resource with name %s from the namespace %s\n", name, namespace)
-				fmt.Errorf("Couldn't delete mksTsk: %v", er)
-				return er
+				return nil
 			} else {
 				fmt.Println("Successively deleted")
 			}

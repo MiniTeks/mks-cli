@@ -15,7 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package mkspipelinerun
+package mkstask
 
 import (
 	"testing"
@@ -27,15 +27,15 @@ func TestDelete(t *testing.T) {
 	fc := &test.FakeMksParam{}
 	fc.SetNamespace("default")
 	fc.ClearObjects()
-	fc.SetTestObjects(GetTestData(Prdel...)...)
+	fc.SetTestObjects(GetTestData(Tdel...)...)
 	cs, _ := fc.Client(nil)
 
-	pr := Command(cs)
-	_, err := test.ExecuteCommand(pr, "delete", "--rn=delmpr1")
-	out, _ := test.ExecuteCommand(pr, "get", "--rn=delmpr1")
+	mt := Command(cs)
+	_, err := test.ExecuteCommand(mt, "delete", "delmt1")
+	out, _ := test.ExecuteCommand(mt, "get", "delmt1")
 	if err != nil {
 		t.Fatalf("Cannot execute command: %v", err)
 	} else if out != "" {
-		t.Fatal("Cant delete pipelinerun")
+		t.Fatal("Cant delete task")
 	}
 }
